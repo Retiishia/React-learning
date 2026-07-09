@@ -1,27 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import Greeting from './greeting.jsx'
-import Card from './Card.jsx'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import heroImg from "./assets/hero.png";
+import Greeting from "./greeting.jsx";
+import Card from "./Card.jsx";
+import "./App.css";
+
+const projects = [
+  {
+    title: "React Study Plan",
+    description: "Day 5 - Children Props",
+  },
+  {
+    title: "Expense Tracker",
+    description: "JavaScript Project",
+  },
+  {
+    title: "Weather App",
+    description: "Using OpenWeather API",
+  },
+];
 
 function App() {
   return (
     <>
-    <Card title="React Study Plan">
-      <p>Day 5 - Children Props</p>
-    </Card>
-
-    <Card title="Expense Tracker">
-      <p>JavaScript Project</p>
-    </Card>
-
-    <Card title="Weather App">
-      <p>Using OpenWeather API</p>
-    </Card>
-</>
-  )
+      {projects.map(project => (
+        <Card title={project.title}>
+          <p>{project.description}</p>
+        </Card>
+      ))}
+    </>
+  );
 }
 
-export default App
+export default App;
