@@ -1,14 +1,13 @@
-import "./Card.css"
+import "./Card.css";
 
-
-function Card({title, children}) {
-    return (
-        <div className="card">
-        <h2>{title}</h2>   
-            
-        {children}
-        </div>
-    );
+function Card({ title, children }) {
+  console.log("Card Rendered");
+  return (
+    <div className="card">
+      <h2>{title}</h2>
+      {children}
+    </div>
+  );
 }
 
 export default Card;

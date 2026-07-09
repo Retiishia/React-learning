@@ -8,25 +8,33 @@ import "./App.css";
 
 const projects = [
   {
+    id: 1,
     title: "React Study Plan",
     description: "Day 5 - Children Props",
+    completed: true,
   },
   {
+    id: 2,
     title: "Expense Tracker",
     description: "JavaScript Project",
+    completed: false,
   },
   {
+    id: 3,
     title: "Weather App",
     description: "Using OpenWeather API",
+    completed: true,
   },
 ];
 
 function App() {
   return (
     <>
-      {projects.map(project => (
-        <Card title={project.title}>
+      {projects.map((project) => (
+        <Card key={project.id} title={project.title}>
           <p>{project.description}</p>
+          {project.completed ? <p>✅ Completed</p> : <p>⏳ In Progress</p>}
+          {project.completed && <p>🎉 Great Job!</p>}
         </Card>
       ))}
     </>
