@@ -1,5 +1,5 @@
-function Greeting({name}) {
-  console.log({name})
+function Greeting({ name }) {
+  console.log({ name });
   return <h1>Hello {name}</h1>;
 }
 
