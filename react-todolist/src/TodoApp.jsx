@@ -3,22 +3,23 @@ import { useState } from "react";
 function TodoApp() {
   const [input, setInput] = useState("");
   const [list, setList] = useState([]);
+  const [count, setCount] = useState(0);
 
   function handleAdding(event) {
     event.preventDefault();
     if (input.trim() === "") return;
-      setList([
-        ...list, 
-        {
-          id: Date.now(),
-          text: input
-        }
-      ]);
-      setInput("");
+    setList(prevList => [
+    ...prevList,
+      {
+        id: Date.now(),
+        text: input,
+      },
+    ]);
+    setInput("");
   }
 
   function handleDelete(id) {
-    setList(list.filter((todo) => todo.id !== id));
+    setList(prevList => prevList.filter((todo) => todo.id !== id));
   }
   return (
     <div>
@@ -30,9 +31,7 @@ function TodoApp() {
           onChange={(event) => setInput(event.target.value)}
         />
 
-        <button type="submit">
-          Add
-        </button>
+        <button type="submit">Add</button>
       </form>
       <ul>
         {list.map((item) => (
@@ -42,6 +41,12 @@ function TodoApp() {
           </li>
         ))}
       </ul>
+
+      <button onClick={() => {
+      setCount(prevCount => prevCount + 1)
+      }}>Add +1</button>
+
+      <p>Count: {count}</p>
     </div>
   );
 }
