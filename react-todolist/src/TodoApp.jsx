@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./TodoApp.css";
 
 function TodoApp() {
   const [input, setInput] = useState("");
@@ -13,6 +14,7 @@ function TodoApp() {
       {
         id: Date.now(),
         text: input,
+        completed: false // Boolean Property
       },
     ]);
     setInput("");
@@ -21,6 +23,20 @@ function TodoApp() {
   function handleDelete(id) {
     setList(prevList => prevList.filter((todo) => todo.id !== id));
   }
+
+  function handleToggle(id) {
+    setList(prevList => prevList.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed: !todo.completed // Toggle the completed property
+        };
+      }
+      return todo; //Return untouched if ID doesn't match
+        })
+    );
+  }
+
   return (
     <div>
       <h1>Todo List</h1>
@@ -36,7 +52,10 @@ function TodoApp() {
       <ul>
         {list.map((item) => (
           <li key={item.id}>
-            {item.text}
+            <span onClick={() => handleToggle(item.id)}
+            className={`todo-text ${item.completed ? "completed" : ""}`}>
+              {item.text}
+            </span>
             <button onClick={() => handleDelete(item.id)}>Delete</button>
           </li>
         ))}
