@@ -8,3 +8,10 @@
   text-decoration: line-through;
   color: #888;
 }
+
+.empty-message {
+    text-align: center;
+    opacity: 0.7;
+    padding: 20px;
+    font-style: italic;
+}
