@@ -1,11 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./TodoApp.css";
 
 function TodoApp() {
   const [input, setInput] = useState("");
-  const [list, setList] = useState([]);
-  const [count, setCount] = useState(0);
-  const [filter, setFilter] = useState("all");
+
+  // Theme State
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  // FILTER STATE (Stores string: "all", "active", or "completed")
+  const [filter, setFilter] = useState(() => {
+    return localStorage.getItem("filter") || "all";
+  });
+
+  // TODOS LIST STATE (Stores the Array of tasks)
+  const [list, setList] = useState(() => {
+    const savedList = localStorage.getItem("todos");
+    return savedList ? JSON.parse(savedList) : [];
+  });
+
+  // 2️⃣ useEFFECT hook: Save the list to localStorage whenever it changes
+  // runs AUTOMATICALLY everytime "list" changes
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(list));
+  }, [list]);
+
+  // Auto-save filter choice whenever 'filter' changes
+  useEffect(() => {
+    localStorage.setItem("filter", filter);
+  }, [filter]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   function handleAdding(event) {
     event.preventDefault();
@@ -40,10 +74,10 @@ function TodoApp() {
   }
 
   function getEmptyMessage() {
-  if (filter === "all") return "No todos yet! Add your first todo! 📝";
-  if (filter === "active") return "All caught up! No active todos! 🎉";
-  if (filter === "completed") return "No completed todos! Keep going! 💪";
-}
+    if (filter === "all") return "No todos yet! Add your first todo! 📝";
+    if (filter === "active") return "All caught up! No active todos! 🎉";
+    if (filter === "completed") return "No completed todos! Keep going! 💪";
+  }
 
   // 1️⃣ DERIVED STATE: Filters the list dynamically on every render
   const visibleTodos = list.filter((todo) => {
@@ -73,18 +107,34 @@ function TodoApp() {
 
       {/* 2️⃣ FILTER BUTTONS */}
       <div className="filter-buttons">
-        <button className={filter === "all" ? "active-filter" : ""} onClick={() => setFilter("all")}>
+        <button
+          className={filter === "all" ? "active-filter" : ""}
+          onClick={() => setFilter("all")}
+        >
           Show All
         </button>
-        <button className={filter === "active" ? "active-filter" : ""} onClick={() => setFilter("active")}>
+        <button
+          className={filter === "active" ? "active-filter" : ""}
+          onClick={() => setFilter("active")}
+        >
           Show Active
         </button>
-        <button className={filter === "completed" ? "active-filter" : ""} onClick={() => setFilter("completed")}>
+        <button
+          className={filter === "completed" ? "active-filter" : ""}
+          onClick={() => setFilter("completed")}
+        >
           Show Completed
         </button>
-        </div>
 
-        {/* LIVE STATS */}
+        <button 
+        type="button"
+        id="theme-toggle"
+        onClick={() => setDarkMode((prev) => !prev)}>
+          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </div>
+
+      {/* LIVE STATS */}
       <p id="statistics">
         <strong>{activeTodos}</strong> Active |{" "}
         <strong>{completedTodos}</strong> Completed |{" "}
@@ -105,7 +155,12 @@ function TodoApp() {
               >
                 {item.text}
               </span>
-              <button className="action-button delete-btn" onClick={() => handleDelete(item.id)}>❌</button>
+              <button
+                className="action-button delete-btn"
+                onClick={() => handleDelete(item.id)}
+              >
+                ❌
+              </button>
             </li>
           ))}
         </ul>

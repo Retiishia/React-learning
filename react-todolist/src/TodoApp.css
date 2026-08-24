@@ -15,3 +15,9 @@
     padding: 20px;
     font-style: italic;
 }
+
+body.dark-mode {
+  --bg-color: #1e1e1e;
+  --container-color: #2b2b2b;
+  --text-color: white;
+}
