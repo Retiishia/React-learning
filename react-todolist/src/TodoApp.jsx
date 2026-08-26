@@ -20,6 +20,9 @@ function TodoApp() {
     return savedList ? JSON.parse(savedList) : [];
   });
 
+  const [editId, setEditId] = useState(null);
+  const [editText, setEditText] = useState("");
+
   // 2️⃣ useEFFECT hook: Save the list to localStorage whenever it changes
   // runs AUTOMATICALLY everytime "list" changes
   useEffect(() => {
@@ -77,6 +80,36 @@ function TodoApp() {
     if (filter === "all") return "No todos yet! Add your first todo! 📝";
     if (filter === "active") return "All caught up! No active todos! 🎉";
     if (filter === "completed") return "No completed todos! Keep going! 💪";
+  }
+
+  // 1️⃣ Start editing a todo
+  function startEditing(todo) {
+    setEditId(todo.id);
+    setEditText(todo.text);
+  }
+
+  // 2️⃣ Save the updated text
+  function handleSaveEdit(id) {
+    if (editText.trim() === "") {
+      // Optional: Delete if empty, or just return without saving
+      setEditId(null);
+      return;
+    }
+    setList((prevList) =>
+      prevList.map((todo) =>
+        todo.id === id ? { ...todo, text: editText } : todo,
+      ),
+    );
+    setEditId(null); // Exit editing mode
+  }
+
+  // 3️⃣ Save on 'Enter' key press or cancel on 'Escape'
+  function handleEditKeyDown(event, id) {
+    if (event.key === "Enter") {
+      handleSaveEdit(id);
+    } else if (event.key === "Escape") {
+      setEditId(null); // Cancel editing
+    }
   }
 
   // 1️⃣ DERIVED STATE: Filters the list dynamically on every render
@@ -150,18 +183,38 @@ function TodoApp() {
           {/* 3️⃣ MAP OVER DERIVED STATE INSTEAD OF ORIGINAL LIST */}
           {visibleTodos.map((item) => (
             <li key={item.id}>
-              {/* 1️⃣ CONTROLLED CHECKBOX */}
               <input
                 type="checkbox"
                 checked={item.completed}
                 onChange={() => handleToggle(item.id)}
               />
-              <span
-                onClick={() => handleToggle(item.id)}
-                className={`todo-text ${item.completed ? "completed" : ""}`}
+
+              {/* CONDITIONAL UI: EDIT INPUT VS SPAN */}
+              {editId === item.id ? (
+                <input
+                  type="text"
+                  className="edit-input"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onBlur={() => handleSaveEdit(item.id)}
+                  onKeyDown={(e) => handleEditKeyDown(e, item.id)}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onDoubleClick={() => startEditing(item)}
+                  className={`todo-text ${item.completed ? "completed" : ""}`}
+                >
+                  {item.text}
+                </span>
+              )}
+
+              <button
+                className="action-button edit-btn"
+                onClick={() => startEditing(item)}
               >
-                {item.text}
-              </span>
+                ✏️
+              </button>
               <button
                 className="action-button delete-btn"
                 onClick={() => handleDelete(item.id)}
@@ -170,6 +223,7 @@ function TodoApp() {
               </button>
             </li>
           ))}
+          ))
         </ul>
       )}
     </div>
