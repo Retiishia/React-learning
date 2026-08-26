@@ -126,10 +126,11 @@ function TodoApp() {
           Show Completed
         </button>
 
-        <button 
-        type="button"
-        id="theme-toggle"
-        onClick={() => setDarkMode((prev) => !prev)}>
+        <button
+          type="button"
+          id="theme-toggle"
+          onClick={() => setDarkMode((prev) => !prev)}
+        >
           {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
         </button>
       </div>
@@ -149,6 +150,12 @@ function TodoApp() {
           {/* 3️⃣ MAP OVER DERIVED STATE INSTEAD OF ORIGINAL LIST */}
           {visibleTodos.map((item) => (
             <li key={item.id}>
+              {/* 1️⃣ CONTROLLED CHECKBOX */}
+              <input
+                type="checkbox"
+                checked={item.completed}
+                onChange={() => handleToggle(item.id)}
+              />
               <span
                 onClick={() => handleToggle(item.id)}
                 className={`todo-text ${item.completed ? "completed" : ""}`}
