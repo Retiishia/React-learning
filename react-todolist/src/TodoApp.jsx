@@ -195,9 +195,9 @@ function TodoApp() {
                   type="text"
                   className="edit-input"
                   value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
+                  onChange={(event) => setEditText(event.target.value)}
                   onBlur={() => handleSaveEdit(item.id)}
-                  onKeyDown={(e) => handleEditKeyDown(e, item.id)}
+                  onKeyDown={(event) => handleEditKeyDown(event, item.id)}
                   autoFocus
                 />
               ) : (
@@ -223,7 +223,6 @@ function TodoApp() {
               </button>
             </li>
           ))}
-          ))
         </ul>
       )}
     </div>
