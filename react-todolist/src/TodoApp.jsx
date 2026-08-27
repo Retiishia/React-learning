@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import "./TodoApp.css";
 
+import TodoInput from "./components/TodoInput";
+import FilterButtons from "./components/FilterButtons";
+import TodoStats from "./components/TodoStats";
+import TodoItem from "./components/TodoItem";
+
 function TodoApp() {
   const [input, setInput] = useState("");
 
@@ -126,102 +131,44 @@ function TodoApp() {
   return (
     <div className="container">
       <h1>Todo List</h1>
-      <form onSubmit={handleAdding} className="input-container">
-        <input
-          type="text"
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
+      
+      <TodoInput
+        input={input}
+        setInput={setInput}
+        handleAdding={handleAdding}
+        setList={setList}
         />
-        <button type="submit">Add</button>
-        <button type="button" onClick={() => setList([])} id="clear">
-          Clear All
-        </button>
-      </form>
 
-      {/* 2️⃣ FILTER BUTTONS */}
-      <div className="filter-buttons">
-        <button
-          className={filter === "all" ? "active-filter" : ""}
-          onClick={() => setFilter("all")}
-        >
-          Show All
-        </button>
-        <button
-          className={filter === "active" ? "active-filter" : ""}
-          onClick={() => setFilter("active")}
-        >
-          Show Active
-        </button>
-        <button
-          className={filter === "completed" ? "active-filter" : ""}
-          onClick={() => setFilter("completed")}
-        >
-          Show Completed
-        </button>
+        <FilterButtons
+          filter={filter}
+          setFilter={setFilter}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
 
-        <button
-          type="button"
-          id="theme-toggle"
-          onClick={() => setDarkMode((prev) => !prev)}
-        >
-          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-        </button>
-      </div>
+        <TodoStats
+          activeTodos={activeTodos}
+          completedTodos={completedTodos}
+          totalTodos={totalTodos}
+        />
 
-      {/* LIVE STATS */}
-      <p id="statistics">
-        <strong>{activeTodos}</strong> Active |{" "}
-        <strong>{completedTodos}</strong> Completed |{" "}
-        <strong>{totalTodos}</strong> Total
-      </p>
-
-      {/* EMPTY MESSAGE */}
-      {visibleTodos.length === 0 ? (
+        {visibleTodos.length === 0 ? (
         <p className="empty-message">{getEmptyMessage()}</p>
       ) : (
         <ul>
-          {/* 3️⃣ MAP OVER DERIVED STATE INSTEAD OF ORIGINAL LIST */}
           {visibleTodos.map((item) => (
-            <li key={item.id}>
-              <input
-                type="checkbox"
-                checked={item.completed}
-                onChange={() => handleToggle(item.id)}
-              />
-
-              {/* CONDITIONAL UI: EDIT INPUT VS SPAN */}
-              {editId === item.id ? (
-                <input
-                  type="text"
-                  className="edit-input"
-                  value={editText}
-                  onChange={(event) => setEditText(event.target.value)}
-                  onBlur={() => handleSaveEdit(item.id)}
-                  onKeyDown={(event) => handleEditKeyDown(event, item.id)}
-                  autoFocus
-                />
-              ) : (
-                <span
-                  onDoubleClick={() => startEditing(item)}
-                  className={`todo-text ${item.completed ? "completed" : ""}`}
-                >
-                  {item.text}
-                </span>
-              )}
-
-              <button
-                className="action-button edit-btn"
-                onClick={() => startEditing(item)}
-              >
-                ✏️
-              </button>
-              <button
-                className="action-button delete-btn"
-                onClick={() => handleDelete(item.id)}
-              >
-                ❌
-              </button>
-            </li>
+            <TodoItem
+              key={item.id}
+              item={item}
+              handleToggle={handleToggle}
+              editId={editId}
+              editText={editText}
+              setEditText={setEditText}
+              handleSaveEdit={handleSaveEdit}
+              handleEditKeyDown={handleEditKeyDown}
+              startEditing={startEditing}
+              handleDelete={handleDelete}
+            />
           ))}
         </ul>
       )}
